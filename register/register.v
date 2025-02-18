@@ -1,6 +1,6 @@
 module register (
     input [31:0] d,
-    input clk,
+    input clk, en,
     output reg [31:0] q
 );
     // Initialize register to zero on start
@@ -8,6 +8,6 @@ module register (
 
     // Update q on positive edge of clock
     always @ (posedge clk) begin
-        q <= d;
+        if (en == 1'b1) q <= d;
     end
 endmodule

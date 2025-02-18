@@ -4,6 +4,7 @@ module register_tb ();
     // Test inputs
     reg [31:0] d;
     reg clk;
+    reg en;
 
     // Output
     wire [31:0] q;
@@ -12,6 +13,7 @@ module register_tb ();
     register uut (
         d,
         clk,
+        en,
         q
     );
 
@@ -24,6 +26,7 @@ module register_tb ();
 
         // Initialize signals
         clk = 0;
+        en = 0; // Disabled on start
         d = 32'h00000000;
         #10 // wait for one clock cycle low->high
 
@@ -31,6 +34,16 @@ module register_tb ();
         #10
 
         d = 32'h0F0F0F0F;
+        #10
+
+        en = 1; // Enabled here
+        d = 32'hFFFFFFFF;
+        #10
+
+        d = 32'h0F0F0F0F;
+        #10
+
+        d = 32'h00000000;
         #10
 
         $finish;
