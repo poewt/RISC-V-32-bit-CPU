@@ -1,26 +1,32 @@
 `timescale 1ns/1ps
 
 module register_file (
-    input clk, writeEn,
-    input [1:0] writeSel,
-    input [31:0] writeData,
-    output  [31:0] readData1
+    input CLK, WE3,
+    input [4:0] A1, A2, A3,
+    input [31:0] WD3,
+    output  [31:0] RD1, RD2
 );
-    // Temp loop var
-    genvar i;
+    // Instantiate an array of 32 32-bit registers
+    reg [31:0] registers [31:0];
 
-    
-    // todo - find how to select which register gets written to
-
-
-    // todo - find how to select which register gets read
-
-    // OR - perhaps implement the 32 registers directly into register_file as an array of arrays
-
-    // Instantiate 4 registers
-    generate
-        for (i = 0; i < 4; i = i + 1) begin
-            register u0 (writeData, clk, writeEn, readData1);
+    // Initialize all registers to zero
+    initial begin : init_regs
+        integer i;
+        for (i = 0; i < 32; i = i + 1) begin
+            registers[i] = 32'h00000000;
         end
-    endgenerate
+    end
+
+    // Continuously assign reads based on A1 and A2 bit values
+    assign RD1 = registers[A1];
+    assign RD2 = registers[A2];
+
+    // Logic happens on every positive edge of the clock
+    always @ (posedge CLK) begin
+        // Write only if write enabled
+        if (WE3 == 1'b1 && A3 != 5'b00000) begin
+            // Access register directly using A3 as the index
+            registers[A3] <= WD3;
+        end
+    end
 endmodule
