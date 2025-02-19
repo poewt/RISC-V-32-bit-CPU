@@ -36,33 +36,33 @@ module register_file_tb ();
         A1 = 5'b00000;
         A2 = 5'b00000;
         A3 = 5'b00000;
-        #10
+        @(posedge CLK) // wait for one clock cycle low->high
 
         // 2. Assign write data despite no enable
         WD3 = 32'hABCDEF0;
-        #10 // wait for one clock cycle low->high
+        @(posedge CLK)
 
         // 3. Enable write data, should not update due to r0 select
         WE3 = 1;
-        #10
+        @(posedge CLK)
 
         // 4. Change write select to r1
         A3 = 5'b00001;
-        #10
+        @(posedge CLK)
 
         // 5. Change read select 1
         A1 = 5'b00001;
-        #10
+        @(posedge CLK)
 
         // 6. Change write select to r4, change write data, change read 2
         WD3 = 32'hFFFFFFFF;
         A3 = 5'b00100;
         A2 = 5'b00100;
-        #10
+        @(posedge CLK)
 
         // 7. Disable write
         WE3 = 0;
-        #10
+        @(posedge CLK)
 
         $finish;
     end
