@@ -1,6 +1,6 @@
 module register_file_tb ();
     // Test inputs
-    reg CLK, WE3;
+    reg CLK, CLR, WE3;
     reg [4:0] A1, A2, A3;
     reg [31:0] WD3;
 
@@ -10,6 +10,7 @@ module register_file_tb ();
     // Instantiate unit under test
     register_file uut (
         CLK,
+        CLR,
         WE3,
         A1,
         A2,
@@ -29,32 +30,37 @@ module register_file_tb ();
 
         // Initialize clock, write enable, and select signals
 
-        // 1. Nothing being written, default read/write select
+        // 1. Initialize default no write
         CLK = 0;
+        CLR = 1;
         WE3 = 0;
-        WD3 = 32'h00000000;
-        A1 = 5'b00000;
-        A2 = 5'b00000;
-        A3 = 5'b00000;
+        WD3 = 32'd0;
+        A1 = 5'd0;
+        A2 = 5'd0;
+        A3 = 5'd0;
         @(posedge CLK) // wait for one clock cycle low->high
 
-        // 2. Assign write data despite no enable
+        // // Reset clear
+        CLR = 0;
+        @(posedge CLK)
+
+        // 2. Case: Write disabled, new write data
         WD3 = 32'hABCDEF0;
         @(posedge CLK)
 
-        // 3. Enable write data, should not update due to r0 select
+        // 3. Case: Write enabled, write pointing to r0
         WE3 = 1;
         @(posedge CLK)
 
-        // 4. Change write select to r1
+        // 4. Case: Write towards r1
         A3 = 5'b00001;
         @(posedge CLK)
 
-        // 5. Change read select 1
+        // 5. Case: Read towards r1 at 1
         A1 = 5'b00001;
         @(posedge CLK)
 
-        // 6. Change write select to r4, change write data, change read 2
+        // 6. Case: Write to r4, new write data, read r4 at 2
         WD3 = 32'hFFFFFFFF;
         A3 = 5'b00100;
         A2 = 5'b00100;

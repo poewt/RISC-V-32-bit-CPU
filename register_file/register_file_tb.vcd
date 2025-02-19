@@ -1,5 +1,5 @@
 $date
-	Tue Feb 18 16:55:43 2025
+	Tue Feb 18 21:15:37 2025
 $end
 $version
 	Icarus Verilog
@@ -14,19 +14,24 @@ $var reg 5 # A1 [4:0] $end
 $var reg 5 $ A2 [4:0] $end
 $var reg 5 % A3 [4:0] $end
 $var reg 1 & CLK $end
-$var reg 32 ' WD3 [31:0] $end
-$var reg 1 ( WE3 $end
+$var reg 1 ' CLR $end
+$var reg 32 ( WD3 [31:0] $end
+$var reg 1 ) WE3 $end
 $scope module uut $end
-$var wire 5 ) A1 [4:0] $end
-$var wire 5 * A2 [4:0] $end
-$var wire 5 + A3 [4:0] $end
+$var wire 5 * A1 [4:0] $end
+$var wire 5 + A2 [4:0] $end
+$var wire 5 , A3 [4:0] $end
 $var wire 1 & CLK $end
-$var wire 32 , RD1 [31:0] $end
-$var wire 32 - RD2 [31:0] $end
-$var wire 32 . WD3 [31:0] $end
-$var wire 1 ( WE3 $end
+$var wire 1 ' CLR $end
+$var wire 32 - RD1 [31:0] $end
+$var wire 32 . RD2 [31:0] $end
+$var wire 32 / WD3 [31:0] $end
+$var wire 1 ) WE3 $end
 $scope begin init_regs $end
-$var integer 32 / i [31:0] $end
+$var integer 32 0 i [31:0] $end
+$upscope $end
+$scope begin reset_cycle $end
+$var integer 32 1 i [31:0] $end
 $upscope $end
 $upscope $end
 $upscope $end
@@ -36,15 +41,17 @@ $dumpall
 $end
 #0
 $dumpvars
-b100000 /
+bx 1
+b100000 0
+b0 /
 b0 .
 b0 -
 b0 ,
 b0 +
 b0 *
-b0 )
-0(
-b0 '
+0)
+b0 (
+1'
 0&
 b0 %
 b0 $
@@ -53,48 +60,49 @@ b0 "
 b0 !
 $end
 #5000
+0'
 1&
 #10000
 0&
-b1010101111001101111011110000 '
-b1010101111001101111011110000 .
 #15000
+b1010101111001101111011110000 (
+b1010101111001101111011110000 /
 1&
 #20000
 0&
-1(
 #25000
+1)
 1&
 #30000
 0&
-b1 %
-b1 +
 #35000
+b1 %
+b1 ,
 1&
 #40000
 0&
-b1010101111001101111011110000 "
-b1010101111001101111011110000 ,
-b1 #
-b1 )
 #45000
+b1010101111001101111011110000 "
+b1010101111001101111011110000 -
+b1 #
+b1 *
 1&
 #50000
 0&
-b100 $
-b100 *
-b100 %
-b100 +
-b11111111111111111111111111111111 '
-b11111111111111111111111111111111 .
 #55000
-b11111111111111111111111111111111 !
-b11111111111111111111111111111111 -
+b100 $
+b100 +
+b100 %
+b100 ,
+b11111111111111111111111111111111 (
+b11111111111111111111111111111111 /
 1&
 #60000
 0&
-0(
 #65000
+0)
 1&
 #70000
 0&
+#75000
+1&
