@@ -1,5 +1,3 @@
-`timescale 1ns/1ps
-
 module register_file (
     input CLK, CLR, WE3,
     input [4:0] A1, A2, A3,

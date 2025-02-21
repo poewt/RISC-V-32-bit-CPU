@@ -61,13 +61,13 @@ module register_file_tb ();
         @(posedge CLK)
 
         // 6. Case: Write to r4, new write data, read r4 at 2
-        WD3 = 32'hFFFFFFFF;
         A3 = 5'b00100;
+        WD3 = 32'hFFFFFFFF;
         A2 = 5'b00100;
         @(posedge CLK)
 
-        // 7. Disable write
-        WE3 = 0;
+        // 7. Switch read at 1
+        A1 = 5'b10000;
         @(posedge CLK)
 
         $finish;
