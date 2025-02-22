@@ -24,51 +24,149 @@ module register_file_tb ();
     always #5 CLK = ~CLK;
 
     initial begin
-        // Create waveform file
+        // Create waveform file for debugging
         $dumpfile("register_file_tb.vcd");
         $dumpvars(0, register_file_tb);
 
-        // Initialize clock, write enable, and select signals
-
-        // 1. Initialize default no write
+        // Case 1 : Initialize clock, reset, and control signals
         CLK = 0;
         CLR = 1;
         WE3 = 0;
-        WD3 = 32'd0;
-        A1 = 5'd0;
-        A2 = 5'd0;
-        A3 = 5'd0;
-        @(posedge CLK) // wait for one clock cycle low->high
+        WD3 = 0;
+        A1 = 0;
+        A2 = 0;
+        A3 = 0;
+        #10
+        if (RD1 != 32'h00000000 || RD2 != 32'h00000000)
+            $display("Case 1 : FAIL");
+        else
+            $display("Case 1 : PASS");
 
-        // // Reset clear
+        // Disable clear
         CLR = 0;
-        @(posedge CLK)
+        #10
 
-        // 2. Case: Write disabled, new write data
+        // Case 2 : Write disabled, attempt write (should not change register content)
+        WE3 = 0;
+        A3 = 5'd4;
         WD3 = 32'hABCDEF0;
-        @(posedge CLK)
+        A2 = 5'd4;
+        #10
+        if (RD2 == 32'hABCDEF0)
+            $display("Case 2 : FAIL");
+        else
+            $display("Case 2 : PASS");
 
-        // 3. Case: Write enabled, write pointing to r0
+        // Case 3 : Write enabled, write to register 4
         WE3 = 1;
-        @(posedge CLK)
+        #10
+        if (RD2 != 32'hABCDEF0)
+            $display("Case 3 : FAIL");
+        else
+            $display("Case 3 : PASS");
 
-        // 4. Case: Write towards r1
-        A3 = 5'b00001;
-        @(posedge CLK)
+        // Case 4 : Read back register 4
+        A1 = 5'd4;
+        #10
+        if (RD1 != 32'hABCDEF0)
+            $display("Case 4 : FAIL");
+        else
+            $display("Case 4 : PASS");
 
-        // 5. Case: Read towards r1 at 1
-        A1 = 5'b00001;
-        @(posedge CLK)
+        // Write to register 1
+        A3 = 5'd1;
+        WD3 = 32'hDEADBEEF;
+        #10
 
-        // 6. Case: Write to r4, new write data, read r4 at 2
-        A3 = 5'b00100;
+        // Case 5 : Read R1 after write
+        A1 = 5'd1;
+        #10
+        if (RD1 != 32'hDEADBEEF)
+            $display("Case 5 : FAIL");
+        else
+            $display("Case 5 : PASS");
+
+        // Attempt write to register 0 (should remain 0)
+        A3 = 5'd0;
         WD3 = 32'hFFFFFFFF;
-        A2 = 5'b00100;
-        @(posedge CLK)
+        #10
 
-        // 7. Switch read at 1
-        A1 = 5'b10000;
-        @(posedge CLK)
+        // Case 6 : Read register 0 (should be 0)
+        A1 = 5'd0;
+        #10
+        if (RD1 == 32'hFFFFFFFF)
+            $display("Case 6 : FAIL");
+        else
+            $display("Case 6 : PASS");
+
+        // Case 7 : Change read registers while writing to another
+        A1 = 5'd1;
+        A2 = 5'd4;
+        A3 = 5'd10;
+        WD3 = 32'h12345678;
+        #10
+        if (RD1 != 32'hDEADBEEF || RD2 != 32'hABCDEF0)
+            $display("Case 7 : FAIL");
+        else
+            $display("Case 7 : PASS");
+
+        // Case 8 : Write to the same register twice
+        A3 = 5'd2;
+        WD3 = 32'hAAAA5555;
+        #10
+        WD3 = 32'h5555AAAA;
+        #10
+        A1 = 5'd2;
+        #10
+        if (RD1 != 32'h5555AAAA)
+            $display("Case 8 : FAIL");
+        else
+            $display("Case 8 : PASS");
+
+        // Case 9 : Immediate read after write (may fail if no write-through)
+        A3 = 5'd3;
+        WD3 = 32'hCAFEBABE;
+        #10
+        A1 = 5'd3;
+        if (RD1 != 32'hCAFEBABE)
+            $display("Case 9 : FAIL (No write-through or delay)");
+        else
+            $display("Case 9 : PASS");
+
+        // Case 10 : Read from two different registers
+        A1 = 5'd1;
+        A2 = 5'd3;
+        #10
+        if (RD1 != 32'hDEADBEEF || RD2 != 32'hCAFEBABE)
+            $display("Case 10 : FAIL");
+        else
+            $display("Case 10 : PASS");
+
+        // Case 11 : Disable write, attempt to write, and verify no change
+        WE3 = 0;
+        A3 = 5'd5;
+        WD3 = 32'hBEEFBEEF;
+        #10
+        A1 = 5'd5;
+        #10
+        if (RD1 == 32'hBEEFBEEF)
+            $display("Case 11 : FAIL");
+        else
+            $display("Case 11 : PASS");
+
+        // Case 12 : Reset after writing
+        WE3 = 1;
+        A3 = 5'd6;
+        WD3 = 32'h11223344;
+        #10
+        CLR = 1;
+        #10 // Allow time for RD1 to reflect the reset
+        A1 = 5'd6;
+
+        if (RD1 != 32'h00000000)
+            $display("Case 12 : FAIL");
+        else
+            $display("Case 12 : PASS");
 
         $finish;
     end

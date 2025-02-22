@@ -21,6 +21,7 @@ module register_file (
 
     // Logic happens on every positive edge of the clock
     always @ (posedge CLK) begin
+        // Synchronus reset is prefered
         if (CLR) begin : reset_cycle
             // Reset all registers on clear
             integer i;
