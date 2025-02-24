@@ -22,16 +22,18 @@ module alu(
                 Result = A ^ B;
             end
             3'b101: begin // SLL
-                // Result = Result << 1;
+                Result = A << 1;
             end
             3'b110: begin // SRL
-                // Result = Result >> 1;
+                Result = A >> 1;
             end
             3'b111: begin // SLT
-                // if (A - B < 0)
+                if (A - B < 0)
                     // Set Less Than to 1
-                // else
+                    Result = 32'd1;
+                else
                     // Set Less Than to 0
+                    Result = 32'd0;
             end
             default:
                 Result = 0;
