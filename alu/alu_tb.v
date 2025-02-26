@@ -143,9 +143,25 @@ module alu_tb ();
         assert_test("SRL", 32'd124 >> 5, 1);
 
         // A LESS THAN B
+        A = -32'd50;
+        B = -32'd36;
         ALUControl = 3'b111;
         #10
-        $display("SLT Result: %0b", Result);
+        assert_test("SLT", 1, 0);
+
+        // A GREATER THAN B
+        A = 32'd50;
+        B = -32'd36;
+        ALUControl = 3'b111;
+        #10
+        assert_test("SLT", 0, 0);
+
+        // A EUQAL B
+        A = 32'd50;
+        B = 32'd50;
+        ALUControl = 3'b111;
+        #10
+        assert_test("SLT", 0, 0);
 
         $finish;
     end
