@@ -20,15 +20,25 @@ module alu_tb ();
     // Task for test assertion
     task assert_test(
         input [127:0] label,
-        input signed [31:0] expected
+        input signed [31:0] expected,
+        input use_bin
     );
         begin
             $display("==================================================");
             $display("%0s", label);
-            $display("A: %d", A);
-            $display("B: %d", B);
-            $display("Expected: %d", expected);
-            $display("Result:   %d", Result);
+
+            if (use_bin) begin
+                $display("A:        %b", A);
+                $display("B:        %b", B);
+                $display("Expected: %b", expected);
+                $display("Result:   %b", Result);
+            end else begin
+                $display("A:        %d", A);
+                $display("B:        %d", B);
+                $display("Expected: %d", expected);
+                $display("Result:   %d", Result);
+            end
+
             $display("Flags: V(%b), N(%b), Zero(%b)", V, N, Zero);
             
             if (Result != expected) begin
@@ -52,59 +62,62 @@ module alu_tb ();
         A = 32'd124;
         B = 32'd73;
         #10
-        assert_test("ADD +A +B", 124+73);
+        assert_test("ADD +A +B", 124+73, 0);
 
         // ADD +A -B
         ALUControl = 3'b000;
         A = 32'd124;
         B = -32'd73;
         #10
-        assert_test("ADD +A -B", 124+(-73));
+        assert_test("ADD +A -B", 124+(-73), 0);
 
         // ADD -A -B
         ALUControl = 3'b000;
         A = -32'd124;
         B = -32'd73;
         #10
-        assert_test("ADD -A -B", -124+(-73));
+        assert_test("ADD -A -B", -124+(-73), 0);
 
         // SUB A > B
         A = 32'd124;
         B = 32'd73;
         ALUControl = 3'b001;
         #10
-        assert_test("SUB A > B", 124-73);
+        assert_test("SUB A > B", 124-73, 0);
 
         // SUB A < B
         A = 32'd20;
         B = 32'd120;
         ALUControl = 3'b001;
         #10
-        assert_test("SUB A < B", 20-120);
+        assert_test("SUB A < B", 20-120, 0);
 
         // SUB A == B
         A = 32'd124;
         B = 32'd124;
         ALUControl = 3'b001;
         #10
-        assert_test("SUB A == B", 124-124);
+        assert_test("SUB A == B", 124-124, 0);
 
         // SUB A - (-B)
         A = 32'd20;
         B = -32'd120;
         ALUControl = 3'b001;
         #10
-        assert_test("SUB A - (-B)", 20-(-120));
+        assert_test("SUB A - (-B)", 20-(-120), 0);
 
         // SUB A - (-B)
         A = -32'd20;
         ALUControl = 3'b001;
         #10
-        assert_test("SUB -A - (-B)", -20-(-120));
+        assert_test("SUB -A - (-B)", -20-(-120), 0);
 
         // AND
+        A = 32'd124;
+        B = 32'd73;
         ALUControl = 3'b010;
         #10
+        assert_test("AND", 32'd124 & 32'd73, 1);
         $display("==================================================");
         $display("AND Result: %0b", Result);
 
