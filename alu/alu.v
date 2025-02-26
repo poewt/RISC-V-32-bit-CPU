@@ -23,10 +23,10 @@ module alu(
                 Result = A ^ B;
             end
             3'b101: begin // SLL
-                Result = A << 1;
+                Result = A << B;
             end
             3'b110: begin // SRL
-                Result = A >> 1;
+                Result = A >> B;
             end
             3'b111: begin // SLT
                 if (A - B < 0)

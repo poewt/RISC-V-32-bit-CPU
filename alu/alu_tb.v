@@ -118,28 +118,29 @@ module alu_tb ();
         ALUControl = 3'b010;
         #10
         assert_test("AND", 32'd124 & 32'd73, 1);
-        $display("==================================================");
-        $display("AND Result: %0b", Result);
 
         // OR
         ALUControl = 3'b011;
         #10
         $display("OR Result: %0b", Result);
+        assert_test("OR", 32'd124 | 32'd73, 1);
 
         // XOR
         ALUControl = 3'b100;
         #10
         $display("XOR Result: %0b", Result);
+        assert_test("XOR", 32'd124 ^ 32'd73, 1);
 
-        // SHIFT LEFT LOGICAL
+        // SLL
+        B = 5; 
         ALUControl = 3'b101;
         #10
-        $display("SLL Result: %0b", Result);
+        assert_test("SLL", 32'd124 << 5, 1);
 
-        // SHIFT RIGHT LOGICAL
+        // SRL
         ALUControl = 3'b110;
         #10
-        $display("SRL Result: %0b", Result);
+        assert_test("SRL", 32'd124 >> 5, 1);
 
         // A LESS THAN B
         ALUControl = 3'b111;
