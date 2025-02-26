@@ -1,5 +1,5 @@
 $date
-	Sun Feb 23 21:29:46 2025
+	Wed Feb 26 17:27:51 2025
 $end
 $version
 	Icarus Verilog
@@ -8,65 +8,100 @@ $timescale
 	1s
 $end
 $scope module alu_tb $end
-$var wire 32 ! Result [31:0] $end
-$var reg 32 " A [31:0] $end
-$var reg 3 # ALUControl [2:0] $end
-$var reg 32 $ B [31:0] $end
+$var wire 1 ! Zero $end
+$var wire 1 " V $end
+$var wire 32 # Result [31:0] $end
+$var wire 1 $ N $end
+$var reg 32 % A [31:0] $end
+$var reg 3 & ALUControl [2:0] $end
+$var reg 32 ' B [31:0] $end
 $scope module uut $end
-$var wire 32 % A [31:0] $end
-$var wire 3 & ALUControl [2:0] $end
-$var wire 32 ' B [31:0] $end
-$var reg 32 ( Result [31:0] $end
+$var wire 32 ( A [31:0] $end
+$var wire 3 ) ALUControl [2:0] $end
+$var wire 32 * B [31:0] $end
+$var reg 1 $ N $end
+$var reg 32 + Result [31:0] $end
+$var reg 1 " V $end
+$var reg 1 ! Zero $end
+$upscope $end
+$scope task assert_test $end
+$var reg 32 , Expected [31:0] $end
+$var reg 128 - label [127:0] $end
 $upscope $end
 $upscope $end
 $enddefinitions $end
-$comment Show the parameter values. $end
-$dumpall
-$end
 #0
 $dumpvars
-b11000101 (
+bx -
+bx ,
+b11000101 +
+b1001001 *
+b0 )
+b1111100 (
 b1001001 '
 b0 &
 b1111100 %
-b1001001 $
-b0 #
-b1111100 "
-b11000101 !
+0$
+b11000101 #
+0"
+0!
 $end
 #10
-b110011 !
-b110011 (
-b1 #
+b110011 #
+b110011 +
 b1 &
+b1 )
+b11000101 ,
+b10000010100010001000100001000000010101101000001001000000010101101000010 -
 #20
-b1001000 !
-b1001000 (
-b10 #
-b10 &
+1$
+b11111111111111111111111110011100 #
+b11111111111111111111111110011100 +
+b1111000 '
+b1111000 *
+b10100 %
+b10100 (
+b110011 ,
+b10100110101010101000010001000000100000100100000001111100010000001000010 -
 #30
-b1111101 !
-b1111101 (
-b11 #
-b11 &
+0$
+1!
+b0 #
+b0 +
+b1111100 '
+b1111100 *
+b1111100 %
+b1111100 (
+b11111111111111111111111110011100 ,
+b10100110101010101000010001000000100000100100000001111000010000001000010 -
 #40
-b110101 !
-b110101 (
-b100 #
-b100 &
+b1111100 #
+b1111100 +
+b10 &
+b10 )
+b0 ,
+b1010011010101010100001000100000010000010010000000111101001111010010000001000010 -
 #50
-b11111000 !
-b11111000 (
-b101 #
-b101 &
+b11 &
+b11 )
 #60
-b111110 !
-b111110 (
-b110 #
-b110 &
+b0 #
+b0 +
+b100 &
+b100 )
 #70
-b0 !
-b0 (
-b111 #
-b111 &
+b11111000 #
+b11111000 +
+b101 &
+b101 )
 #80
+b111110 #
+b111110 +
+b110 &
+b110 )
+#90
+b0 #
+b0 +
+b111 &
+b111 )
+#100

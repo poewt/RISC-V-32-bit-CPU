@@ -1,39 +1,82 @@
 module alu_tb ();
     // test inputs
-    reg [31:0] A, B;
+    reg signed [31:0] A, B;
     reg [2:0] ALUControl;
 
     // test outputs
-    wire [31:0] Result;
+    wire signed [31:0] Result;
+    wire V, N, Zero;
 
     alu uut(
         A,
         B,
         ALUControl,
-        Result
+        Result,
+        V,
+        N,
+        Zero
     );
+
+    // Task for test assertion
+    task assert_test(
+        input [127:0] label,
+        input signed [31:0] Expected
+    );
+        begin
+            $display("==================================================");
+            $display("%0s", label);
+            $display("A: %d", A);
+            $display("B: %d", B);
+            $display("Expected: %d", Expected);
+            $display("Result:   %d", Result);
+            $display("Flags: V(%b), N(%b), Zero(%b)", V, N, Zero);
+            
+            if (Result != Expected) begin
+                $display("❌ Test Failed! Expected: %0d, Got: %0d", Expected, Result);
+            end else if (A - B < 0 && N != 1) begin
+                $display("❌ Test Failed! Expected N: 1, Got N: %0d", N);
+            end else if (A - B == 0 && Zero != 1) begin
+                $display("❌ Test Failed! Expected Zero: 1, Got Zero: %0d", Zero);
+            end else begin
+                $display("✅ Test Passed!");
+            end
+        end
+    endtask
 
     initial begin
         $dumpfile("alu_tb.vcd");
         $dumpvars(0, alu_tb);
 
-        // ADD
+        // ADD A > B
         ALUControl = 3'b000;
         A = 32'd124;
         B = 32'd73;
-        $display("A: %b", A);
-        $display("B: %b", B);
         #10
-        $display("ADD Result: %0b", Result);
+        assert_test("ADD +A +B", 124+73);
 
-        // SUB
+        // SUB A > B
         ALUControl = 3'b001;
         #10
-        $display("SUB Result: %0b", Result);
+        assert_test("SUB A > B", 124-73);
+
+        // SUB A < B
+        A = 32'd20;
+        B = 32'd120;
+        ALUControl = 3'b001;
+        #10
+        assert_test("SUB A < B", 20-120);
+
+        // SUB A == B
+        A = 32'd124;
+        B = 32'd124;
+        ALUControl = 3'b001;
+        #10
+        assert_test("SUB A == B", 124-124);
 
         // AND
         ALUControl = 3'b010;
         #10
+        $display("==================================================");
         $display("AND Result: %0b", Result);
 
         // OR

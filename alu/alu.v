@@ -1,7 +1,8 @@
 module alu(
-    input [31:0] A, B,
+    input signed [31:0] A, B,
     input [2:0] ALUControl,
-    output reg [31:0] Result
+    output reg signed [31:0] Result,
+    output reg V, N, Zero
 );
 
     always @(A, B, ALUControl) begin
@@ -38,5 +39,18 @@ module alu(
             default:
                 Result = 0;
         endcase
+
+        if (A - B < 0) begin
+            N <= 1;
+            Zero <= 0;
+        end else if (A - B == 0) begin
+            Zero <= 1;
+            N <= 0;
+            V <= 0;
+        end else begin
+            V <= 0;
+            N <= 0;
+            Zero <= 0;
+        end
     end
 endmodule
