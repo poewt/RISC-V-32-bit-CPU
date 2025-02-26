@@ -1,5 +1,5 @@
 $date
-	Wed Feb 26 17:27:51 2025
+	Wed Feb 26 17:30:19 2025
 $end
 $version
 	Icarus Verilog
@@ -25,7 +25,7 @@ $var reg 1 " V $end
 $var reg 1 ! Zero $end
 $upscope $end
 $scope task assert_test $end
-$var reg 32 , Expected [31:0] $end
+$var reg 32 , expected [31:0] $end
 $var reg 128 - label [127:0] $end
 $upscope $end
 $upscope $end
