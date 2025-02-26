@@ -54,7 +54,23 @@ module alu_tb ();
         #10
         assert_test("ADD +A +B", 124+73);
 
+        // ADD +A -B
+        ALUControl = 3'b000;
+        A = 32'd124;
+        B = -32'd73;
+        #10
+        assert_test("ADD +A -B", 124+(-73));
+
+        // ADD -A -B
+        ALUControl = 3'b000;
+        A = -32'd124;
+        B = -32'd73;
+        #10
+        assert_test("ADD -A -B", -124+(-73));
+
         // SUB A > B
+        A = 32'd124;
+        B = 32'd73;
         ALUControl = 3'b001;
         #10
         assert_test("SUB A > B", 124-73);
@@ -72,6 +88,19 @@ module alu_tb ();
         ALUControl = 3'b001;
         #10
         assert_test("SUB A == B", 124-124);
+
+        // SUB A - (-B)
+        A = 32'd20;
+        B = -32'd120;
+        ALUControl = 3'b001;
+        #10
+        assert_test("SUB A - (-B)", 20-(-120));
+
+        // SUB A - (-B)
+        A = -32'd20;
+        ALUControl = 3'b001;
+        #10
+        assert_test("SUB -A - (-B)", -20-(-120));
 
         // AND
         ALUControl = 3'b010;
