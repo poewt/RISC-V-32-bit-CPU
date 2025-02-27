@@ -43,10 +43,32 @@ module alu_tb ();
             
             if (Result != expected) begin
                 $display("❌ Test Failed! Expected: %0d, Got: %0d", expected, Result);
-            end else if (A - B < 0 && N != 1) begin
+
+            // ADD ============================================================================================
+
+            // Negative
+            end else if (ALUControl == 3'b000 && A + B < 0 && N != 1) begin
                 $display("❌ Test Failed! Expected N: 1, Got N: %0d", N);
-            end else if (A - B == 0 && Zero != 1) begin
+            // Zero
+            end else if (ALUControl == 3'b000 && A + B == 0 && Zero != 1) begin
                 $display("❌ Test Failed! Expected Zero: 1, Got Zero: %0d", Zero);
+            // Overflow
+            end else if (ALUControl == 3'b000 && !(A[31] ^ B[31]) && (A[31] ^ Result[31]) && V != 1) begin
+                $display("❌ Test Failed! Expected V: 1, Got V: %0d", V);
+
+            // SUB ============================================================================================
+
+            // Negative
+            end else if (ALUControl == 3'b001 && A - B < 0 && N != 1) begin
+                $display("❌ Test Failed! Expected N: 1, Got N: %0d", N);
+            // Zero
+            end else if (ALUControl == 3'b001 && A - B == 0 && Zero != 1) begin
+                $display("❌ Test Failed! Expected Zero: 1, Got Zero: %0d", Zero);
+            // Overflow
+            end else if (ALUControl == 3'b001 && (A[31] ^ B[31]) && (A[31] ^ Result[31]) && V != 1) begin
+                $display("❌ Test Failed! Expected V: 1, Got V: %0d", V);
+
+            // PASS ============================================================================================
             end else begin
                 $display("✅ Test Passed!");
             end
@@ -104,7 +126,7 @@ module alu_tb ();
         B = -32'd120;
         ALUControl = 3'b001;
         #10
-        assert_test("SUB A - (-B)", 20-(-120), 0);
+        assert_test("SUB A - (-B)", 20-(-120), 1);
 
         // SUB A - (-B)
         A = -32'd20;
@@ -162,6 +184,34 @@ module alu_tb ();
         ALUControl = 3'b111;
         #10
         assert_test("SLT", 0, 0);
+
+        // OVERFLOW V ADD +A +B
+        A = 32'h7FFFFFFF;
+        B = 32'h7FFFFFFF;
+        ALUControl = 3'b000;
+        #10
+        assert_test("V ADD +A +B", 32'h7FFFFFFF+32'h7FFFFFFF, 1);
+
+        // OVERFLOW V ADD -A -B
+        A = 32'h80000000;
+        B = 32'hAAAAAAAA;
+        ALUControl = 3'b000;
+        #10
+        assert_test("V ADD -A -B", 32'h80000000+32'hAAAAAAAA, 1);
+
+        // OVERFLOW V SUB +A -B => A-(-B) => A+B
+        A = 32'h0FFFFFFF;
+        B = 32'h8FFFFFFF;
+        ALUControl = 3'b001;
+        #10
+        assert_test("V SUB +A -B", 32'h0FFFFFFF-32'h8FFFFFFF, 1);
+
+        // OVERFLOW V SUB -A +B => -A-B => (-A) + (-B)
+        A = 32'h8FFFFFFF;
+        B = 32'h7FFFFFFF;
+        ALUControl = 3'b001;
+        #10
+        assert_test("V SUB -A +B", 32'h8FFFFFFF-32'h7FFFFFFF, 1);
 
         $finish;
     end
