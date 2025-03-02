@@ -54,7 +54,7 @@ module alu(
             N = 0;
         end
 
-        // Handle N, Zero flags only on ADD and SUB
+        // Overflow flags
         if (ALUControl == 3'b000) begin // ADD
             // V - A&B must have same sign and
             // V - A must have diff sign from Result
