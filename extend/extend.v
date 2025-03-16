@@ -25,7 +25,8 @@ module extend (
                 imm_out = { { 11{imm_in[31]} } , imm_in[31], imm_in[19:12], imm_in[20], imm_in[30:21], 1'b0 };
             end
             default: begin // X
-                imm_out = 32'b0;
+                // * stay at previous value
+                // imm_out = 32'b0;
             end
         endcase
     end
