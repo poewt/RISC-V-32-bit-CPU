@@ -10,7 +10,7 @@ module extend (
                 imm_out = { { 20{imm_in[31]} }, imm_in[31:20]};
             end
             3'b001: begin // S-Type (Stores)
-                imm_out = { { 13{imm_in[31]} }, imm_in[31:25], imm_in[11:7] };
+                imm_out = { { 23{imm_in[31]} }, imm_in[31:25], imm_in[11:7] };
             end
             3'b010: begin // B-Type (Branch)
                 // * LSB bit is 0 for word alignment (branch type)

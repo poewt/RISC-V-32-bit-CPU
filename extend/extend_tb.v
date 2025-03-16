@@ -55,7 +55,7 @@ module extend_tb ();
         // Case S-Type : Positive Value
         imm_in = 25'b0000000_0000001111111_11111; extend_ctrl = 3'b001; #10;
         assert_test("S-TYPE POS    ", imm_in, imm_out, { 
-            13'b0, // Sign extension
+            23'b0, // Sign extension
             7'b0000000, // Bits 31 to 25
             5'b11111 // Bits 11 to 7
         });
@@ -63,7 +63,7 @@ module extend_tb ();
         // Case S-Type : Negative Value
         imm_in = 25'b1111100_0000001111111_10101; extend_ctrl = 3'b001; #10;
         assert_test("S-TYPE NEG    ", imm_in, imm_out, { 
-            ~13'b0, // Sign extension
+            ~23'b0, // Sign extension
             7'b1111100, // Bits 31 to 25
             5'b10101 // Bits 11 to 7
         });
